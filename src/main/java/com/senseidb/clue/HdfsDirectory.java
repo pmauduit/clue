@@ -26,7 +26,7 @@ public class HdfsDirectory extends BaseDirectory {
 
   public HdfsDirectory(LockFactory lockFactory, Path dirPath,
       Configuration config) throws IOException {
-    super(lockFactory);
+    super();
     this.fs = FileSystem.get(config);
     dir = dirPath;
   }
@@ -39,14 +39,13 @@ public class HdfsDirectory extends BaseDirectory {
   @Override
   public IndexOutput createOutput(String name, IOContext context)
       throws IOException {    
-    return new OutputStreamIndexOutput(name, fs.create(new Path(dir, name)), BUFFER_SIZE);
+    return new OutputStreamIndexOutput(fs.create(new Path(dir, name)), BUFFER_SIZE);
   }
 
   @Override
   public void sync(Collection<String> strings) throws IOException {
   }
 
-  @Override
   public void renameFile(String source, String dest) throws IOException {
   }
 
@@ -129,4 +128,10 @@ public class HdfsDirectory extends BaseDirectory {
       return clone;
     }
   }
+
+@Override
+public boolean fileExists(String name) throws IOException {
+    // TODO Auto-generated method stub
+    return false;
+}
 }

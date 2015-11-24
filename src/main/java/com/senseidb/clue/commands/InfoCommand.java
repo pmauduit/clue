@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.LeafReader;
-import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
@@ -91,15 +91,15 @@ public class InfoCommand extends ClueCommand {
     IndexReader r = ctx.getIndexReader();
     out.println("readonly mode: " + getContext().isReadOnlyMode());
 
-    List<LeafReaderContext> leaves = r.leaves();
+    List<AtomicReaderContext> leaves = r.leaves();
     if (args.length == 0) {
       out.println("numdocs: " + r.numDocs());
       out.println("maxdoc: " + r.maxDoc());
       out.println("num deleted docs: " + r.numDeletedDocs());
       out.println("segment count: " + leaves.size());
       SortedMap<String, Object[]> fields = new TreeMap<String, Object[]>();
-      for (LeafReaderContext leaf : leaves) {
-        LeafReader ar = leaf.reader();
+      for (AtomicReaderContext leaf : leaves) {
+        AtomicReader ar = leaf.reader();
         FieldInfos fldInfos = ar.getFieldInfos();
         Iterator<FieldInfo> finfoIter = fldInfos.iterator();
         
@@ -142,8 +142,8 @@ public class InfoCommand extends ClueCommand {
         return;
       }
 
-      LeafReaderContext leaf = leaves.get(segid);
-      LeafReader atomicReader = leaf.reader();
+      AtomicReaderContext leaf = leaves.get(segid);
+      AtomicReader atomicReader = leaf.reader();
 
       out.println("segment " + segid + ": ");
       out.println("doc base:\t" + leaf.docBase);

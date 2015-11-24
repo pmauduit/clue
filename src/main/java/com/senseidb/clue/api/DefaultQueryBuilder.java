@@ -3,6 +3,7 @@ package com.senseidb.clue.api;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 
 public class DefaultQueryBuilder implements QueryBuilder {
 
@@ -11,7 +12,7 @@ public class DefaultQueryBuilder implements QueryBuilder {
   @Override
   public void initialize(String defaultField, Analyzer analyzer)
       throws Exception {
-    parser = new QueryParser(defaultField, analyzer);
+    parser = new QueryParser(Version.LUCENE_4_9, defaultField, analyzer);
     
   }
 

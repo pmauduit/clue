@@ -7,6 +7,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 
 import com.senseidb.clue.ClueContext;
 
@@ -28,7 +29,7 @@ public class DeleteCommand extends ClueCommand {
   
   @Override
   public void execute(String[] args, PrintStream out) throws Exception {
-    QueryParser qparser = new QueryParser("contents", new StandardAnalyzer());
+    QueryParser qparser = new QueryParser(Version.LUCENE_4_9, "contents", new StandardAnalyzer(Version.LUCENE_4_9));
     Query q = null;
     if (args.length == 0){
       q = new MatchAllDocsQuery();

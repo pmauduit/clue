@@ -17,12 +17,13 @@ import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.SortedSetDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexOptions;
+import org.apache.lucene.index.FieldInfo.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.Version;
 import org.json.JSONObject;
 
 public class BuildSampleIndex {
@@ -89,8 +90,8 @@ public class BuildSampleIndex {
     File f = new File(args[0]);
     BufferedReader reader = new BufferedReader(new FileReader(f));
 
-    IndexWriterConfig idxWriterConfig = new IndexWriterConfig(new StandardAnalyzer());
-    Directory dir = FSDirectory.open(FileSystems.getDefault().getPath(args[1]));
+    IndexWriterConfig idxWriterConfig = new IndexWriterConfig(Version.LUCENE_4_9, new StandardAnalyzer(Version.LUCENE_4_9));
+    Directory dir = FSDirectory.open(FileSystems.getDefault().getPath(args[1]).toFile());
     IndexWriter writer = new IndexWriter(dir, idxWriterConfig);
     int count = 0;
     while (true) {

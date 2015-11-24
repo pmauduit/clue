@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.apache.lucene.index.LeafReader;
-import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.DocsAndPositionsEnum;
 import org.apache.lucene.index.DocsEnum;
 import org.apache.lucene.index.FieldInfo;
@@ -98,13 +98,13 @@ public class ReconstructCommand extends ClueCommand {
     int doc = Integer.parseInt(args[1]);
     
     IndexReader reader = ctx.getIndexReader();
-    List<LeafReaderContext> leaves = reader.leaves();
+    List<AtomicReaderContext> leaves = reader.leaves();
     
     boolean found = false;
     
     
-    for (LeafReaderContext ctx : leaves) {
-      LeafReader atomicReader = ctx.reader();
+    for (AtomicReaderContext ctx : leaves) {
+      AtomicReader atomicReader = ctx.reader();
       FieldInfo finfo = atomicReader.getFieldInfos().fieldInfo(field);
       if (finfo == null) continue;
       

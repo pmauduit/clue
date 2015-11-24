@@ -28,7 +28,7 @@ public class DefaultDirectoryBuilder implements DirectoryBuilder {
     
     if (SUPPORTED_SCHEMES.contains(scheme)) {
       if ("file".equals(scheme)) {
-        return FSDirectory.open(FileSystems.getDefault().getPath(idxUri.getPath()));
+        return FSDirectory.open(FileSystems.getDefault().getPath(idxUri.getPath()).toFile());
       }
       else if ("hdfs".equals(scheme)){
         String hadoopConfDir = null;
@@ -50,7 +50,7 @@ public class DefaultDirectoryBuilder implements DirectoryBuilder {
           config.addResource(new Path(hadoopConfPath,"mapred-site.xml"));
         }
         Path hdfsPath = new Path(filePath);        
-        return new HdfsDirectory(NoLockFactory.INSTANCE, hdfsPath, config);
+        return new HdfsDirectory(NoLockFactory.getNoLockFactory(), hdfsPath, config);
       }
       else {
         throw new IOException("unsupported protocol: " + scheme);

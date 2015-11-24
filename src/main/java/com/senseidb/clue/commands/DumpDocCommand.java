@@ -1,16 +1,17 @@
 package com.senseidb.clue.commands;
 
 
-import com.senseidb.clue.ClueContext;
+import java.io.PrintStream;
+import java.util.List;
+
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.LeafReader;
-import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.util.BytesRef;
 
-import java.io.PrintStream;
-import java.util.List;
+import com.senseidb.clue.ClueContext;
 
 public class DumpDocCommand extends ClueCommand {
 
@@ -38,10 +39,10 @@ public class DumpDocCommand extends ClueCommand {
         int doc = Integer.parseInt(args[0]);
 
         IndexReader reader = ctx.getIndexReader();
-        List<LeafReaderContext> leaves = reader.leaves();
+        List<AtomicReaderContext> leaves = reader.leaves();
 
-        for (LeafReaderContext ctx : leaves) {
-            LeafReader atomicReader = ctx.reader();
+        for (AtomicReaderContext ctx : leaves) {
+            AtomicReader atomicReader = ctx.reader();
 
             int docID = doc - ctx.docBase;
 

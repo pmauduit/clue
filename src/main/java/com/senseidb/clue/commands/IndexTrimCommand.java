@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.ConstantScoreQuery;
@@ -97,7 +97,7 @@ public class IndexTrimCommand extends ClueCommand {
       Filter f = new Filter() {
   
         @Override
-        public DocIdSet getDocIdSet(LeafReaderContext context, Bits acceptDocs) throws IOException {
+        public DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException {
           return new DocIdSet() {
 
               @Override
@@ -113,6 +113,7 @@ public class IndexTrimCommand extends ClueCommand {
             }
           };
         }
+
       };
   
       writer.deleteDocuments(new ConstantScoreQuery(f));

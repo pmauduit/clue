@@ -5,11 +5,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.index.DocValuesType;
-import org.apache.lucene.index.LeafReader;
-import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.index.FieldInfo.DocValuesType;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.NumericDocValues;
 import org.apache.lucene.index.SortedDocValues;
@@ -122,7 +122,7 @@ public class DocValCommand extends ClueCommand {
     }
   }
   
-  private Object readDocValues(String field, DocValuesType docValType, LeafReader atomicReader) throws IOException{
+  private Object readDocValues(String field, DocValuesType docValType, AtomicReader atomicReader) throws IOException{
     Object docVals = null;
     if (docValType == DocValuesType.NUMERIC) {
       docVals = atomicReader.getNumericDocValues(field);
@@ -143,11 +143,11 @@ public class DocValCommand extends ClueCommand {
   }
 
   private void showDocId(int docid, int docBase, String field,
-      LeafReader atomicReader, PrintStream out, int segmentid)
+      AtomicReader atomicReader, PrintStream out, int segmentid)
       throws Exception {
     FieldInfo finfo = atomicReader.getFieldInfos().fieldInfo(field);
 
-    if (finfo == null || finfo.getDocValuesType() == DocValuesType.NONE) {
+    if (finfo == null) {
       out.println("docvalue does not exist for field: " + field);
       return;
     }
@@ -183,13 +183,13 @@ public class DocValCommand extends ClueCommand {
     }
 
     IndexReader reader = ctx.getIndexReader();
-    List<LeafReaderContext> leaves = reader.leaves();
+    List<AtomicReaderContext> leaves = reader.leaves();
     if (docidList != null && !docidList.isEmpty()) {
       for (int i = leaves.size() - 1; i >= 0; --i) {
-        LeafReaderContext ctx = leaves.get(i);
+        AtomicReaderContext ctx = leaves.get(i);
         for (Integer docid : docidList) {
           if (ctx.docBase <= docid) {
-            LeafReader atomicReader = ctx.reader();
+            AtomicReader atomicReader = ctx.reader();
             showDocId(docid, ctx.docBase, field, atomicReader, out, i);
           }
         }
@@ -198,11 +198,11 @@ public class DocValCommand extends ClueCommand {
       return;
     } else {
       for (int i = 0; i < leaves.size(); ++i) {
-        LeafReaderContext ctx = leaves.get(i);
-        LeafReader atomicReader = ctx.reader();
+          AtomicReaderContext ctx = leaves.get(i);
+          AtomicReader atomicReader = ctx.reader();
         FieldInfo finfo = atomicReader.getFieldInfos().fieldInfo(field);
 
-        if (finfo == null || finfo.getDocValuesType() == DocValuesType.NONE) {
+        if (finfo == null) {
           out.println("docvalue does not exist for field: " + field);
           break;
         }

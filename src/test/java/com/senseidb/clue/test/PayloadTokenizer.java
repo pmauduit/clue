@@ -27,7 +27,9 @@ public class PayloadTokenizer extends Tokenizer {
   
   public PayloadTokenizer(String text)
           throws IOException {
-    setReader(new StringReader(text));
+      super(new StringReader(text));
+      
+    //setReader(new StringReader(text));
     this.tokens = text.toLowerCase().split(",");
     
     termAttr = addAttribute(CharTermAttribute.class);

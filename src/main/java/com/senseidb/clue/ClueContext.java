@@ -15,13 +15,14 @@ import jline.console.completer.StringsCompleter;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.FieldInfo;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.LeafReader;
-import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.Version;
 
 import com.senseidb.clue.api.BytesRefDisplay;
 import com.senseidb.clue.api.IndexReaderFactory;
@@ -74,7 +75,7 @@ public class ClueContext {
     this.readerFactory.initialize(directory);
     this.queryBuilder = config.getQueryBuilder();
     this.queryBuilder.initialize("contents", analyzerQuery);
-    this.writerConfig = new IndexWriterConfig(new StandardAnalyzer());
+    this.writerConfig = new IndexWriterConfig(Version.LUCENE_4_9, new StandardAnalyzer(Version.LUCENE_4_9));
     this.termBytesRefDisplay = config.getTermBytesRefDisplay();
     this.payloadBytesRefDisplay = config.getPayloadBytesRefDisplay();
     this.writer = null;
@@ -123,8 +124,8 @@ public class ClueContext {
   }
   Collection<String> fieldNames() {
     LinkedList<String> fieldNames = new LinkedList<String>();
-    for (LeafReaderContext context : getIndexReader().leaves()) {
-      LeafReader reader = context.reader();
+    for (AtomicReaderContext context : getIndexReader().leaves()) {
+      AtomicReader reader = context.reader();
       for(FieldInfo info : reader.getFieldInfos()) {
         fieldNames.add(info.name);
       }
